@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KERNEL PANIC // TRACEBACK</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            background-color: #050505;
+            color: #b8b8b8;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 18px;
+            font-size: 13px;
+            line-height: 1.45;
+            margin: 0;
+        }
+        .panic-header {
+            color: #ff3b3b;
+            font-weight: bold;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .addr { color: #5c6773; }
+        .func { color: #e6c07b; }
+        .err { color: #ff3b3b; }
+        .hint {
+            color: #6a737d;
+            font-size: 11px;
+            margin-left: 14px;
+            margin-bottom: 4px;
+        }
+        .dep-row {
+            margin: 12px 0;
+            padding-left: 10px;
+            border-left: 2px solid #222;
+        }
+        input {
+            background: #0d0d0d;
+            border: 1px solid #333;
+            color: #50fa7b;
+            font-family: inherit;
+            font-size: 13px;
+            padding: 4px 8px;
+            margin-left: 14px;
+            width: calc(100% - 20px);
+            max-width: 280px;
+            outline: none;
+            text-transform: lowercase;
+        }
+        input:focus { border-color: #ff3b3b; }
+        button {
+            background: #1a1a1a;
+            color: #ff3b3b;
+            border: 1px solid #ff3b3b;
+            padding: 10px 16px;
+            font-family: inherit;
+            font-weight: bold;
+            font-size: 12px;
+            margin-top: 18px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 280px;
+        }
+        button:active { background: #ff3b3b; color: #000; }
+        #diagnostic-output {
+            margin-top: 24px;
+            padding-top: 15px;
+            border-top: 1px dashed #333;
+            white-space: pre-wrap;
+            color: #e0e0e0;
+        }
+        .corrupt-alert { color: #ff3b3b; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="panic-header">
+    [ 0.000000] KERNEL PANIC - NOT SYNCING: Fatal exception in ego_runtime.c<br>
+    [ 0.000014] Process: identity_daemon (pid: 2004, threadinfo=0xffff8800)<br>
+    [ 0.000029] Cause: Corruption detected in root memory sector. Origin unknown.
+</div>
+
+<div>Call Trace:</div>
+<div><span class="addr">[&lt;0xffffffff8104a2&gt;]</span> <span class="func">suppress_grief+0x42/0x90</span></div>
+<div><span class="addr">[&lt;0xffffffff8108f1&gt;]</span> <span class="func">build_monument+0x118/0x200</span></div>
+<div><span class="addr">[&lt;0xffffffff810c44&gt;]</span> <span class="err">__segfault_unresolved_symbols+0x00/0xff</span></div>
+<br>
+<div>---[ UNLINKED DEPENDENCIES (LINK TO TRACE ROOT CORRUPTOR) ]---</div>
+
+<div class="dep-row">
+    <div><span class="err">ld.so:</span> missing symbol <span class="func">lib_comfort.so</span> (offset 0x01)</div>
+    <div class="hint">// HINT 1: [Your clue pointing to Jawat]</div>
+    <input type="text" id="dep1" placeholder="inject symbol..." autocomplete="off">
+</div>
+
+<div class="dep-row">
+    <div><span class="err">ld.so:</span> missing symbol <span class="func">lib_ideal.so</span> (offset 0x02)</div>
+    <div class="hint">// HINT 2: [Your clue pointing to ZeroTwo]</div>
+    <input type="text" id="dep2" placeholder="inject symbol..." autocomplete="off">
+</div>
+
+<div class="dep-row">
+    <div><span class="err">ld.so:</span> missing symbol <span class="func">lib_companion.so</span> (offset 0x03)</div>
+    <div class="hint">// HINT 3: [Your clue pointing to Sindy]</div>
+    <input type="text" id="dep3" placeholder="inject symbol..." autocomplete="off">
+</div>
+
+<div class="dep-row">
+    <div><span class="err">ld.so:</span> missing symbol <span class="func">lib_ghost.so</span> (offset 0x04)</div>
+    <div class="hint">// HINT 4: [Your clue pointing to Julina]</div>
+    <input type="text" id="dep4" placeholder="inject symbol..." autocomplete="off">
+</div>
+
+<div class="dep-row">
+    <div><span class="err">ld.so:</span> missing symbol <span class="func">lib_observer.so</span> (offset 0x05)</div>
+    <div class="hint">// HINT 5: [Your clue pointing to Monika]</div>
+    <input type="text" id="dep5" placeholder="inject symbol..." autocomplete="off">
+</div>
+
+<button onclick="resolveTraceback()">&gt; RELINK &amp; TRACE CORRUPTOR</button>
+
+<div id="diagnostic-output"></div>
+
+<script>
+    // Encrypted XOR payload (Replace with generated hex array once final text is locked)
+    const encryptedLog = [0x14, 0x0d, 0x1e, 0x45, 0x08, 0x1b, 0x02, 0x0d, 0x13, 0x16, 0x00];
+
+    async function streamOutput(text, container) {
+        container.innerHTML = "";
+        for (let i = 0; i < text.length; i++) {
+            container.innerHTML += text.charAt(i);
+            await new Promise(r => setTimeout(r, 38));
+        }
+    }
+
+    function resolveTraceback() {
+        const out = document.getElementById("diagnostic-output");
+        const d1 = document.getElementById("dep1").value.trim().toLowerCase();
+        const d2 = document.getElementById("dep2").value.trim().toLowerCase();
+        const d3 = document.getElementById("dep3").value.trim().toLowerCase();
+        const d4 = document.getElementById("dep4").value.trim().toLowerCase();
+        const d5 = document.getElementById("dep5").value.trim().toLowerCase();
+
+        const keyChain = d1 + d2 + d3 + d4 + d5;
+
+        if (!d1 || !d2 || !d3 || !d4 || !d5) {
+            out.innerHTML = "<span class='corrupt-alert'>[ABORT] Dynamic linker failed: 1 or more symbols still NULL.</span>";
+            return;
+        }
+
+        let decoded = "";
+        for (let i = 0; i < encryptedLog.length; i++) {
+            const c = encryptedLog[i] ^ keyChain.charCodeAt(i % keyChain.length);
+            decoded += String.fromCharCode(c);
+        }
+
+        streamOutput(decoded, out);
+    }
+</script>
+
+</body>
+</html>
